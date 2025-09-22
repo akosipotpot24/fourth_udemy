@@ -10,7 +10,7 @@ class UserController extends Controller
 {
     public function logout(){
         auth()->logout();
-        return 'you are logged out';
+        return redirect('/')->with( 'success' , 'You have Succesfully logged out.' );
     }
     public function showCorrectHomepage(){
         if(auth()->check()){
@@ -31,9 +31,9 @@ class UserController extends Controller
 
          if(auth()->attempt(['username'=>$incomingGields['loginusername'] , 'password'=>$incomingGields['loginpassword'] ] )){
             $request->session()->regenerate();
-            return 'congrats';
+            return redirect('/')->with( 'success' , 'You have Succesfully logged in.' );
         }else{                                                                                                                                                                                                                                                
-            return 'sorry'  ;
+            return redirect('/')->with( 'failure' , 'Invalid Login.' ); ;
             }
     }
 
@@ -45,8 +45,9 @@ class UserController extends Controller
                 'password' => ['required', 'min:8' , 'confirmed'],
             ]
         );
-        User::create($incomingGields);
-        return 'hello world';
+       $user= User::create($incomingGields);
+        auth()->login($user);
+        return redirect('/')->with( 'success' , 'thank you for creating account.' ); 
     }
     
 }
