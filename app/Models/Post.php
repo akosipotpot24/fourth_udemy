@@ -13,6 +13,10 @@ class Post extends Model
         'title',
         'body',
         'user_id'
+          ];
 
-    ];
+    public function user(){
+        return $this->belongsTo(User::class, 'user_id');
+    }
+
 }
