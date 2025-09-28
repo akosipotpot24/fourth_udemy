@@ -19,20 +19,20 @@ class UserController extends Controller
             return view('homepage');
         }
     }
-    
+
     public function login(Request $request){
          $incomingGields = $request->validate(
             [
-                'loginusername'=> 'required', 
+                'loginusername'=> 'required',
                 'loginpassword' => 'required'
-                
-            ]        
+
+            ]
         );
 
          if(auth()->attempt(['username'=>$incomingGields['loginusername'] , 'password'=>$incomingGields['loginpassword'] ] )){
             $request->session()->regenerate();
             return redirect('/')->with( 'success' , 'You have Succesfully logged in.' );
-        }else{                                                                                                                                                                                                                                                
+        }else{
             return redirect('/')->with( 'failure' , 'Invalid Login.' ); ;
             }
     }
@@ -47,8 +47,8 @@ class UserController extends Controller
         );
        $user= User::create($incomingGields);
         auth()->login($user);
-        return redirect('/')->with( 'success' , 'thank you for creating account.' ); 
+        return redirect('/')->with( 'success' , 'thank you for creating account.' );
     }
-    
+
 }
 
