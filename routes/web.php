@@ -16,13 +16,16 @@ use App\Http\Controllers\UserController;
 |
 */
 
-Route::get('/', [UserController::class, "showCorrectHomepage"]);
+Route::get('/', [UserController::class, "showCorrectHomepage"])->name('login');
 
 Route::post('/register', [UserController:: class, 'register']);
 Route::post('/login', [UserController:: class, 'login']);
 Route::post('/logout', [UserController:: class, 'logout']);
 
 // blog post routes
-Route::get('/create-post', [PostController:: class, 'showCreateForm' ] );
-Route::post('/create-post', [PostController:: class, 'storeNewPost' ] );
 Route::get('/post/{post}', [PostController:: class, 'viewSinglePost' ] );
+Route::get('/create-post', [PostController:: class, 'showCreateForm' ] )->middleware('port');
+Route::post('/create-post', [PostController:: class, 'storeNewPost' ] );
+
+//profile related  route
+Route::get('/profile/{pizza:username}',[UserController::class, 'profile']);
