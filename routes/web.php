@@ -26,6 +26,7 @@ Route::post('/logout', [UserController:: class, 'logout'])->middleware('port');
 Route::get('/post/{post}', [PostController:: class, 'viewSinglePost' ] );
 Route::get('/create-post', [PostController:: class, 'showCreateForm' ] )->middleware('port');
 Route::post('/create-post', [PostController:: class, 'storeNewPost' ] )->middleware('port');
+Route::delete('/post/{post}', [PostController:: class, 'delete' ] )->middleware('can:delete,post');
 
 //profile related  route
 Route::get('/profile/{user:username}',[UserController::class, 'profile']);
