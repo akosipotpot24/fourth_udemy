@@ -3,6 +3,7 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\PostController;
 use App\Http\Controllers\UserController;
+use App\Http\Controllers\FollowController;
 
 
 /*
@@ -28,6 +29,9 @@ Route::post('/logout', [UserController:: class, 'logout'])->middleware('port');
 Route::get('/manage-avatar',[UserController::class,'showAvatarForm'])->middleware('port');
 Route::post('/manage-avatar',[UserController::class,'storeAvatar'])->middleware('port');
 
+//folloe related routs
+Route::post('/create-follow/{user:username}',[FollowController::class,'createFollow'])->middleware('port');
+Route::post('/remove-follow/{user:username}',[FollowController::class,'removeFollow'])->middleware('port');
 
 // blog post routes
 Route::get('/post/{post}', [PostController:: class, 'viewSinglePost' ] );
