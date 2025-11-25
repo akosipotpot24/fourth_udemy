@@ -6,6 +6,7 @@ use App\Models\User;
 use App\Models\Follow;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
+use Illuminate\Support\Facades\View;
 use Intervention\Image\ImageManager;
 use Illuminate\Support\Facades\Storage;
 use Intervention\Image\Drivers\Gd\Driver;
@@ -41,14 +42,39 @@ class UserController extends Controller
         return view('avatar-form');
     }
 
-    public function profile(User $user){
-        $currentlyFollowing = 0;
+    private function getSharedData($user){
+         $currentlyFollowing = 0;
         if(auth()->check()){
-            $currentlyFollowing = Follow::where([['user_id','=',auth()->user()->id], ['followeduser', '=' ,$user->id]])->count();
+            $currentlyFollowing = Follow::where([
+                ['user_id','=',auth()->user()->id], 
+                ['followeduser', '=' ,$user->id]])->count();
         }
-      
-        return view('profile-posts',['currentlyFollowing'=>$currentlyFollowing ,'avatar'=> $user->avatar, 'username'=>$user->username,'posts'=>$user->posts()->latest()->get(),'postCount' => $user->posts()->count()]);
+        View::share('sharedData',[
+                'currentlyFollowing'=>$currentlyFollowing ,
+                'avatar'=> $user->avatar, 
+                'username'=>$user->username,
+                'postCount' => $user->posts()->count(),
+                'followerCount'=>$user->followers()->count(), 
+                'followingCount'=> $user->followingTheseUsers()->count() 
+            ]);
     }
+
+    public function profile(User $user){
+        $this->getSharedData($user);
+        return view('profile-posts',['posts'=>$user->posts()->latest()->get()]);
+    }
+
+    public function profileFollowers(User $user){
+        $this->getSharedData($user);
+        return view('profile-followers',['followers'=>$user->followers()->latest()->get()]);
+       
+    }
+    public function profileFollowing(User $user){
+        $this->getSharedData($user);
+        return view('profile-following',['following'=>$user->followingTheseUsers()->latest()->get()]); 
+
+    }
+
 
     public function logout(){
         auth()->logout();
@@ -56,7 +82,7 @@ class UserController extends Controller
     }
     public function showCorrectHomepage(){
         if(auth()->check()){
-            return view('homepage-feed');
+            return view('homepage-feed', ['posts'=> auth()->user()->feedPosts()->latest()->get()] );
         }else{
             return view('homepage');
         }
