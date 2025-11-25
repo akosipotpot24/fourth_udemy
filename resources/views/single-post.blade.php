@@ -1,5 +1,5 @@
 
-<x-layout>
+<x-layout :doctitle="$post->title">
     <div class="container py-md-5 container--narrow">
       <div class="d-flex justify-content-between">
         <h2>{{$post->title}}</h2>
@@ -9,7 +9,7 @@
           <form class="delete-post-form d-inline" action="/post/{{ $post->id }}" method="POST">
              @csrf
             @method('DELETE')
-           
+
             <button class="delete-post-button text-danger" data-toggle="tooltip" data-placement="top" title="Delete"><i class="fas fa-trash"></i></button>
           </form>
         </span>
