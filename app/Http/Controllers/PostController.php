@@ -3,11 +3,19 @@
 namespace App\Http\Controllers;
 
 use App\Models\Post;
+use App\Events\PostEvent;
 use Illuminate\Http\Request;
+use App\Events\OurExampleEvent;
 
 class PostController extends Controller
 {
     //
+    public function search($term){
+        $post = Post::search($term)->get();
+        $post->load('user:id,username,avatar');
+        return $post;
+    }
+
     public function actuallyUpdate(Post $post,Request $request){
         $incomingFields = $request->validate([
             'title' =>'required',
@@ -40,6 +48,7 @@ class PostController extends Controller
         $incomingFields['body']  = strip_tags($incomingFields['body']);
         $incomingFields['user_id']  = auth()->id();
         $newPost = Post::create($incomingFields);
+        event(new PostEvent(['username'=> auth()->user()->username, 'title'=>  $incomingFields['title'] ] ));
         return redirect("/post/{$newPost->id}")->with('success','New post successfully created');
     }
     public function showCreateForm(){

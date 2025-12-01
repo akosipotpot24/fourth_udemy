@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\User;
 use App\Models\Follow;
 use Illuminate\Http\Request;
+use App\Events\OurExampleEvent;
 use Illuminate\Validation\Rule;
 use Illuminate\Support\Facades\View;
 use Intervention\Image\ImageManager;
@@ -77,6 +78,8 @@ class UserController extends Controller
 
 
     public function logout(){
+        
+        event(new OurExampleEvent(['username'=> auth()->user()->username, 'action'=>'logout' ] ));
         auth()->logout();
         return redirect('/')->with( 'success' , 'You have Succesfully logged out.' );
     }
@@ -93,12 +96,14 @@ class UserController extends Controller
             [
                 'loginusername'=> 'required',
                 'loginpassword' => 'required'
-
             ]
         );
 
          if(auth()->attempt(['username'=>$incomingGields['loginusername'] , 'password'=>$incomingGields['loginpassword'] ] )){
             $request->session()->regenerate();
+
+            event(new OurExampleEvent(['username'=> auth()->user()->username, 'action'=>'login' ]));
+
             return redirect('/')->with( 'success' , 'You have Succesfully logged in.' );
         }else{
             return redirect('/')->with( 'failure' , 'Invalid Login.' ); ;
