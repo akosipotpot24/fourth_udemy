@@ -2,13 +2,14 @@
 
 namespace App\Providers;
 
+use App\Events\OurExampleEvent;
+use App\Listeners\listenerPost;
+use App\Listeners\PostListener;
+use App\Listeners\OurExampleListener;
+use Illuminate\Support\Facades\Event;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Auth\Listeners\SendEmailVerificationNotification;
 use Illuminate\Foundation\Support\Providers\EventServiceProvider as ServiceProvider;
-use App\Events\OurExampleEvent;
-use App\Events\PostEvent;
-use App\Listeners\OurExampleListener;
-use App\Listeners\PostListener;
 
 class EventServiceProvider extends ServiceProvider
 {
@@ -23,9 +24,10 @@ class EventServiceProvider extends ServiceProvider
         ],
         OurExampleEvent::class => [
             OurExampleListener::class,
+            
         ],
         PostEvent::class => [
-            PostListener::class,
+            listenerPost::class,
         ],
     ];
 
